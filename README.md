@@ -8,6 +8,7 @@ This is a machine learning web app built with **Streamlit** that predicts the ma
 ## 🔍 Input Features
 - Age
 - Systolic Blood Pressure
+- Diastolic Blood Pressure 
 - Blood Sugar
 - Body Temperature
 - Heart Rate
