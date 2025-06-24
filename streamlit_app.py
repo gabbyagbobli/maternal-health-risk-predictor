@@ -1,48 +1,51 @@
 import streamlit as st
-import pickle
+import joblib
 import pandas as pd
 
-import os
-st.write("Current directory contents:", os.listdir())
+# Optional: Debugging during dev
+# import os
+# st.write("Current directory contents:", os.listdir())
 
 # Load model
-model = pickle.load(open('maternal_risk_model.pkl', 'rb'))
+model = joblib.load('maternal_risk_model.pkl')
 
-# Streamlit app
-st.title("Maternal Health Risk Predictor")
+# Streamlit UI
+st.title("🩺 Maternal Health Risk Predictor")
 
-st.markdown(
-    '''
-    👩‍⚕️ **Predict the maternal health risk level** based on clinical indicators.
+st.markdown("""
+👩‍⚕️ **Predict the maternal health risk level** based on clinical indicators.
 
-    Fill in the following patient information to receive a risk assessment and recommended next steps.
-    '''
-)
+Fill in the following patient information to receive a risk assessment and recommended next steps.
+""")
 
 # User inputs
-age = st.number_input("Age", min_value=10, max_value=100, value=30)
-systolic_bp = st.number_input("Systolic Blood Pressure", min_value=80, max_value=200, value=120)
-diastolic_bp = st.number_input("Diastolic Blood Pressure", min_value=50, max_value=130, value=80)
-blood_sugar = st.number_input("Blood Sugar (BS)", min_value=50, max_value=300, value=100)
-body_temp = st.number_input("Body Temperature (°F)", min_value=90.0, max_value=110.0, value=98.6)
-heart_rate = st.number_input("Heart Rate", min_value=40, max_value=200, value=75)
+age = st.number_input("Age (years)", 10, 100, 30)
+systolic_bp = st.number_input("Systolic Blood Pressure (mmHg)", 80, 200, 120)
+diastolic_bp = st.number_input("Diastolic Blood Pressure (mmHg)", 50, 130, 80)
+blood_sugar = st.number_input("Blood Sugar (mg/dL)", 50, 300, 100)
+body_temp = st.number_input("Body Temperature (°F)", 90.0, 110.0, 98.6)
+heart_rate = st.number_input("Heart Rate (bpm)", 40, 200, 75)
 
-# Prepare input as DataFrame
+# Input DataFrame
 input_data = pd.DataFrame(
     [[age, systolic_bp, diastolic_bp, blood_sugar, body_temp, heart_rate]],
     columns=['Age', 'SystolicBP', 'DiastolicBP', 'BS', 'BodyTemp', 'HeartRate']
 )
 
-# Predict and display result
+st.subheader("📋 Summary of Your Inputs")
+st.dataframe(input_data)
+
+# Prediction
 if st.button("Predict Risk Level"):
-    prediction = model.predict(input_data)[0]
+    try:
+        prediction = model.predict(input_data)[0]
+        st.success(f"🎯 **Predicted Maternal Risk Level:** {prediction.upper()}")
 
-    st.success(f"🎯 **Predicted Maternal Risk Level:** {prediction.upper()}")
-
-    # Provide tailored advice
-    if prediction.lower() == 'low risk':
-        st.info("✅ You are currently at **low risk**. Maintain a balanced diet, stay hydrated, take prenatal vitamins, and engage in light physical activity like walking or yoga.")
-    elif prediction.lower() == 'mid risk':
-        st.warning("⚠️ You are at **moderate risk**. Please monitor your blood pressure, sugar levels, and heart rate regularly. Consult your doctor to review your prenatal care plan.")
-    elif prediction.lower() == 'high risk':
-        st.error("🚨 You are at **high risk**. Immediate medical attention is recommended. Contact your healthcare provider for a full clinical assessment.")
+        if prediction.lower() == 'low risk':
+            st.info("✅ You are currently at **low risk**. Maintain a balanced diet, stay hydrated, take prenatal vitamins, and engage in light physical activity like walking or yoga.")
+        elif prediction.lower() == 'mid risk':
+            st.warning("⚠️ You are at **moderate risk**. Please monitor your blood pressure, sugar levels, and heart rate regularly. Consult your doctor to review your prenatal care plan.")
+        elif prediction.lower() == 'high risk':
+            st.error("🚨 You are at **high risk**. Immediate medical attention is recommended. Contact your healthcare provider for a full clinical assessment.")
+    except Exception as e:
+        st.error(f"Prediction failed: {str(e)}")
