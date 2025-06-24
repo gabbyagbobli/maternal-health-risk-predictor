@@ -1,13 +1,10 @@
-import streamlit as st
-import joblib
+iimport streamlit as st
+import pickle
 import pandas as pd
 
-# Optional: Debugging during dev
-# import os
-# st.write("Current directory contents:", os.listdir())
-
 # Load model
-model = joblib.load('maternal_risk_model.pkl')
+with open('maternal_risk_model.pkl', 'rb') as file:
+    model = pickle.load(file)
 
 # Streamlit UI
 st.title("🩺 Maternal Health Risk Predictor")
