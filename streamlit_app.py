@@ -2,6 +2,9 @@ import streamlit as st
 import pickle
 import pandas as pd
 
+import os
+st.write("Current directory contents:", os.listdir())
+
 # Load model
 model = pickle.load(open('maternal_risk_model.pkl', 'rb'))
 
