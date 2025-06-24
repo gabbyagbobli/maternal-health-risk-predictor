@@ -6,9 +6,19 @@ import pickle
 # with open('scaler.pkl', 'rb') as f:
 #     scaler = pickle.load(f)
 
-# Load model
-with open('maternal_risk_model.pkl', 'rb') as file:
-    model = pickle.load(file)
+# Load model and scaler
+with open('maternal_risk_model.pkl', 'rb') as f:
+    model = pickle.load(f)
+
+with open('scaler.pkl', 'rb') as f:
+    scaler = pickle.load(f)
+
+# Prepare and scale input
+input_data = pd.DataFrame([[age, systolic_bp, diastolic_bp, blood_sugar, body_temp, heart_rate]],
+    columns=['Age', 'SystolicBP', 'DiastolicBP', 'BS', 'BodyTemp', 'HeartRate'])
+
+input_scaled = scaler.transform(input_data)
+prediction = model.predict(input_scaled)[0]
 
 # Page config
 st.set_page_config(page_title="Maternal Risk Predictor", page_icon="🩺")
