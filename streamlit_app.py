@@ -189,6 +189,7 @@ st.markdown(
     """
     <div class="footer">
         <p>🔬 Built with ❤️ by Group 1 of Health Informatics class — Department of Statistics & Actuarial Science, University of Ghana.</p>
+        <p>Special thanks to our lecturer, Dr. Eric Nyarko (MPh, PhD).</p>
         <p>📌 For educational use only. Not a substitute for professional medical advice.</p>
     </div>
     """,
